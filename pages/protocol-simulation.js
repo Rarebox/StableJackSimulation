@@ -19,6 +19,7 @@ const ProtocolSimulation = () => {
     calculateLeverage,
     calculateCollateralizationRatio,
     amountOfAVAXDepositedIntoProtocol, // Store'dan alınıyor
+    setAmountOfAVAXDepositedIntoProtocol,
   } = useStore();
 
   return (
@@ -41,6 +42,12 @@ const ProtocolSimulation = () => {
           label="Number of xAVAX in circulation"
           value={xAVAXInCirculation}
           setValue={setXAVAXInCirculation}
+          type="number"
+        />
+        <Input
+          label="Amount of AVAX Deposited into the Protocol"
+          value={amountOfAVAXDepositedIntoProtocol}
+          setValue={setAmountOfAVAXDepositedIntoProtocol}
           type="number"
         />
 

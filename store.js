@@ -19,6 +19,8 @@ const useStore = create((set) => ({
   setChangeInAVAXPrice: (newChange) =>
     set({ changeInAVAXPrice: newChange / 100 }), // Trading Simulation için (Yüzde olarak girdi alınırken ondalık sayıya dönüştür)
 
+  setAmountOfAVAXDepositedIntoProtocol: (newAmount) =>
+    set({ amountOfAVAXDepositedIntoProtocol: newAmount }), // Yeni fonksiyon
   // Hesaplama Fonksiyonları (Exceldeki Formüllere Göre)
   calculateTotalValueAVAXCollateral: () => {
     // B4 = AVAX Price x Amount of AVAX Deposited into the Protocol
@@ -82,11 +84,7 @@ const useStore = create((set) => ({
   },
   calculateLeverage: () => {
     // B11 = IF (B8 <= 0 ; "Infinite" ; ((B5+B8)/B8))
-    const {
-      aUSDInCirculation,
-      calculateXAVAXMarketCap,
-      calculateAUSDMarketCap,
-    } = useStore.getState();
+    const { calculateXAVAXMarketCap, calculateAUSDMarketCap } = useStore.getState();
     const xAVAXMarketCap = calculateXAVAXMarketCap();
     const aUSDMarketCap = calculateAUSDMarketCap();
     return xAVAXMarketCap <= 0
@@ -131,10 +129,10 @@ const useStore = create((set) => ({
     return newAVAXPrice * xAVAXMinted;
   },
   calculateAmountOfAVAXUserHave: () => {
-    // E8 = E7/(B2+B2xE5)
+    // E8 = E7 / (B2 + (B2 x E5))
     const { avaxPrice, changeInAVAXPrice } = useStore.getState();
     const newValueXAVAXPosition = useStore.getState().calculateNewXAVAXPositionValue();
-    return newValueXAVAXPosition / (avaxPrice + avaxPrice * changeInAVAXPrice);
+    return newValueXAVAXPosition / (avaxPrice + (avaxPrice * changeInAVAXPrice));
   },
   calculateIncreaseDecreaseDollarValue: () => {
     // E9 =(E7-E4)/E4
