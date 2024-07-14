@@ -21,11 +21,11 @@ const useStore = create((set) => ({
 
   setAmountOfAVAXDepositedIntoProtocol: (newAmount) =>
     set({ amountOfAVAXDepositedIntoProtocol: newAmount }), // Yeni fonksiyon
+
   // Hesaplama Fonksiyonları (Exceldeki Formüllere Göre)
   calculateTotalValueAVAXCollateral: () => {
     // B4 = AVAX Price x Amount of AVAX Deposited into the Protocol
-    const { avaxPrice, amountOfAVAXDepositedIntoProtocol } =
-      useStore.getState();
+    const { avaxPrice, amountOfAVAXDepositedIntoProtocol } = useStore.getState();
     return avaxPrice * amountOfAVAXDepositedIntoProtocol;
   },
   calculateAUSDMarketCap: () => {
@@ -35,8 +35,7 @@ const useStore = create((set) => ({
       calculateTotalValueAVAXCollateral,
       calculateCollateralizationRatio,
     } = useStore.getState();
-    const collateralizationRatio =
-      calculateCollateralizationRatio() * 100; // Yüzde olarak hesaplamak için
+    const collateralizationRatio = calculateCollateralizationRatio() * 100; // Yüzde olarak hesaplamak için
     return collateralizationRatio > 100
       ? aUSDInCirculation
       : calculateTotalValueAVAXCollateral();
@@ -84,7 +83,10 @@ const useStore = create((set) => ({
   },
   calculateLeverage: () => {
     // B11 = IF (B8 <= 0 ; "Infinite" ; ((B5+B8)/B8))
-    const { calculateXAVAXMarketCap, calculateAUSDMarketCap } = useStore.getState();
+    const {
+      calculateXAVAXMarketCap,
+      calculateAUSDMarketCap,
+    } = useStore.getState();
     const xAVAXMarketCap = calculateXAVAXMarketCap();
     const aUSDMarketCap = calculateAUSDMarketCap();
     return xAVAXMarketCap <= 0
@@ -129,10 +131,10 @@ const useStore = create((set) => ({
     return newAVAXPrice * xAVAXMinted;
   },
   calculateAmountOfAVAXUserHave: () => {
-    // E8 = E7 / (B2 + (B2 x E5))
+    // E8 = E7/(B2+B2xE5)
     const { avaxPrice, changeInAVAXPrice } = useStore.getState();
     const newValueXAVAXPosition = useStore.getState().calculateNewXAVAXPositionValue();
-    return newValueXAVAXPosition / (avaxPrice + (avaxPrice * changeInAVAXPrice));
+    return newValueXAVAXPosition / (avaxPrice + avaxPrice * changeInAVAXPrice);
   },
   calculateIncreaseDecreaseDollarValue: () => {
     // E9 =(E7-E4)/E4
@@ -143,8 +145,13 @@ const useStore = create((set) => ({
   calculateIncreaseDecreaseAVAXValue: () => {
     // E10 =(E8-E2)/E2
     const { amountOfAVAXDepositedByUser } = useStore.getState();
-    const amountOfAVAXUserHave = useStore.getState().calculateAmountOfAVAXUserHave();
-    return ((amountOfAVAXUserHave - amountOfAVAXDepositedByUser) / amountOfAVAXDepositedByUser) * 100;
+    const amountOfAVAXUserHave =
+      useStore.getState().calculateAmountOfAVAXUserHave();
+    return (
+      ((amountOfAVAXUserHave - amountOfAVAXDepositedByUser) /
+        amountOfAVAXDepositedByUser) *
+      100
+    );
   },
 }));
 
